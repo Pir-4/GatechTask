@@ -4,6 +4,7 @@ from modules import test_constants
 
 
 class EmployeeRest:
+    """Provide Rest API for employee's end point"""
 
     @staticmethod
     def create_by_version(api_version=1):
