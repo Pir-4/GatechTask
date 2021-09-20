@@ -1,5 +1,5 @@
 import json
-from base_rest import BaseRestApi
+from modules.rest_funcs.base_rest import BaseRestApi
 from modules import test_constants
 
 
