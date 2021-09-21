@@ -1,26 +1,52 @@
-import re
+from modules.test_constants import MIN_AGE, MAX_AGE
 
 
 def is_employee_valid(employee_body, raise_error=True):
     """"""
-    checkers = [{"compare": lambda body: body["employee_salary"] >= 0,
-                 "message": "The salary can be less 0"},
-                {"compare": lambda body: body["employee_age"] >= 12,
-                "message": "An employee can't be younger 12"},
-                {"compare": lambda body: body["employee_age"] <= 150,
-                 "message": "An employee can't be older 150"},
-                {"compare": lambda body: body["profile_image"] is not None,
+    checkers = [{"keys": ["salary", "employee_salary"],
+                 "compare": lambda body, check_key: body[check_key] >= 0,
+                 "message": "The salary can be less 0",
+                 "is_required": True},
+                {"keys": ["age", "employee_age"],
+                 "compare": lambda body, check_key: body[check_key] >= MIN_AGE,
+                 "message": f"An employee can't be younger {MIN_AGE}",
+                 "is_required": True},
+                {"keys": ["age", "employee_age"],
+                 "compare": lambda body, check_key: body[check_key] <= MAX_AGE,
+                 "message": f"An employee can't be older {MAX_AGE}",
+                 "is_required": True},
+                {"keys": ["profile_image"],
+                 "compare": lambda body, check_key: body[check_key] is not None,
                  "message": "Profile image can't be None"},
-                {"compare": lambda body: isinstance(body["employee_name"], str),
-                 "message": "The employee name must be a string"}
+                {"keys": ["name", "employee_name"],
+                 "compare": lambda body, check_key: isinstance(body[check_key], str),
+                 "message": "The employee name must be a string",
+                 "is_required": True},
                 # TODO add verify format of an employee_name by regexp
+                {"keys": ["id"],
+                 "compare": lambda body, check_key: isinstance(body[check_key], int),
+                 "message": "The id must be int",
+                 "is_required": True}
                 ]
 
-    is_valid = True
-    for check_item in checkers:
-        if not check_item["compare"](employee_body):
-            print(check_item["message"])
-            is_valid = False
-            if raise_error:
-                raise ValueError(check_item["message"])
-    return is_valid
+    error_messages = []
+    if not isinstance(employee_body, dict):
+        error_messages.append("Employee body must be a dict")
+    else:
+        for check_item in checkers:
+            inter = set(check_item["keys"]).intersection(set(employee_body.keys()))
+            if not inter and check_item.get("is_required", False):
+                error_messages.append(F"Employee body doesn't contain keys {check_item['key']}")
+                continue
+            elif not inter and not check_item.get("is_required", False):
+                continue
+
+            if not check_item["compare"](employee_body, list(inter)[0]):
+                error_messages.append(check_item["message"])
+
+    if error_messages:
+        print(error_messages)
+        if raise_error:
+            raise ValueError(error_messages)
+        return False
+    return True
