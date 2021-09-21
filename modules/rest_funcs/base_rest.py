@@ -1,4 +1,5 @@
 import requests
+import time
 
 
 class BaseRestApi:
@@ -35,12 +36,17 @@ class BaseRestApi:
         """
         request_url = self._get_url(self._baseUrl, rest_obj, obj_id)
         params = params or {}
-
-        response = self._requestsCalls[req_type.upper()](request_url, json=params, headers=self._header)
-        result = {"status_code": response.status_code,
-                  "reason": response.reason,
-                  "text": response.text,
-                  "success": response.ok}
+        result = {"status_code": 429}  # when Too Many Requests
+        time_sleep = 3
+        while result["status_code"] == 429:
+            response = self._requestsCalls[req_type.upper()](request_url, json=params, headers=self._header)
+            result = {"status_code": response.status_code,
+                      "reason": response.reason,
+                      "text": response.text,
+                      "success": response.ok}
+            if result["status_code"] == 429:
+                time.sleep(time_sleep)
+                time_sleep += 3
         return result
 
     def update_header(self, header):
