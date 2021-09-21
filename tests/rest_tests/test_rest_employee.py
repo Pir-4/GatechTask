@@ -2,7 +2,7 @@ import pytest
 from http import HTTPStatus
 from modules.rest_funcs.employee_rest import EmployeeRest
 from modules.test_constants import ResponseMessages, AVAILABLE_IDS
-from modules.testfunctions import support_funcs
+from modules.utils import support_funcs, generator
 
 
 @pytest.fixture()
@@ -16,7 +16,7 @@ def test_get_positive(rest_version_employee, employee_id):
     status_code, body = rest_version_employee.get(employee_id)
     assert status_code == HTTPStatus.OK
     assert support_funcs.is_employee_valid(body["data"])
-    assert body["message"] == ResponseMessages.SUCCESS_MSG
+    assert body["message"] == ResponseMessages.GET_SUCCESS_MSG
     assert body["status"] == ResponseMessages.SUCCESS_STATUS
 
 
@@ -30,8 +30,20 @@ def test_get_negative(rest_version_employee, employee_id):
     assert body["status"] == ResponseMessages.ERROR_STATUS
 
 
-# @pytest.mark.parametrize('rest_version_employee', [1], indirect=True)
-# def test_create_positive(rest_version_employee):
-#     """"""
-#     rest_version_employee.create({"name": "test", "salary": "123", "age": "23"})
-#     t=1
+@pytest.mark.parametrize('rest_version_employee', [1], indirect=True)
+def test_create_positive(rest_version_employee):
+    """"""
+    expected_body = generator.create_body(["id"])
+    status_code, body = rest_version_employee.create(expected_body)
+    assert status_code == HTTPStatus.OK
+    assert support_funcs.is_employee_valid(body["data"])
+    employee_id = body["data"].pop("id")
+    assert body["data"] == expected_body
+    assert body["message"] == ResponseMessages.POST_SUCCESS_MSG
+    assert body["status"] == ResponseMessages.SUCCESS_STATUS
+    status_code, body = rest_version_employee.get(employee_id)
+    assert status_code == HTTPStatus.OK
+    assert body["message"] == ResponseMessages.GET_SUCCESS_MSG
+    assert body["status"] == ResponseMessages.SUCCESS_STATUS
+    assert support_funcs.is_employee_valid(body["data"])
+    # TODO add compare bodies
