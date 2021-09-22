@@ -4,13 +4,15 @@ AVAILABLE_IDS = range(1, 25)
 
 
 class RestPoints:
-    """"""
+    """ Storage Rest endpoints name """
+
     EMPLOYEE = "employee"
     CREATE = "create"
 
 
 class ResponseMessages:
-    """"""
+    """Storage REST response messages"""
+
     SUCCESS_STATUS = "success"
     ERROR_STATUS = "error"
     GET_SUCCESS_MSG = "Successfully! Record has been fetched."

@@ -2,7 +2,15 @@ from modules.test_constants import MIN_AGE, MAX_AGE, FIELD_MAP
 
 
 def is_employee_valid(employee_body, raise_error=True):
-    """"""
+    """ validate that body has right parameters
+
+    :param employee_body: checked body
+    :type employee_body: dict
+    :param raise_error: raise exception if body has errors
+    :type raise_error: bool
+    :return: result of validation
+    :rtype: bool
+    """
     checkers = [{"keys": ["salary", "employee_salary"],
                  "compare": lambda body, check_key: body[check_key] >= 0,
                  "message": "The salary can be less 0",
@@ -53,7 +61,17 @@ def is_employee_valid(employee_body, raise_error=True):
 
 
 def equals(post_body, get_body, raise_error=True):
-    """"""
+    """ Compare post and get bodies
+
+    :param post_body: body which is used for a post request
+    :type post_body: dict
+    :param get_body: body which is returned from a get request
+    :type get_body: dict
+    :param raise_error: raise exception if body has errors
+    :type raise_error: bool
+    :return: result of validation
+    :rtype: bool
+    """
     error_messages = []
     for field_name in post_body.keys():
         get_field_name = FIELD_MAP[field_name]
@@ -67,4 +85,3 @@ def equals(post_body, get_body, raise_error=True):
             raise AssertionError(message)
         return False
     return True
-

@@ -27,7 +27,7 @@ class EmployeeRest:
         :returns: None
         """
         self._base_rest = BaseRestApi(base_url)
-        self._base_rest.update_header({"User-Agent": "XY"})# without it response is 406
+        self._base_rest.update_header({"User-Agent": "XY"})  # without it response is 406
 
     def get(self, emp_id):
         """ Get employee by id
@@ -41,17 +41,14 @@ class EmployeeRest:
         print(result)
         return result["status_code"], json.loads(result["text"])
 
-    def create(self, employee, expected_error=False):
+    def create(self, employee):
         """ Create employee
 
         :param employee: request body for creating an employee
         :type employee: dict
-        :param expected_error: True if expected an error else False
-        :type expected_error: bool
         :returns: response status code, body response
         :rtype: int, dict
         """
         result = self._base_rest.request("POST", test_constants.RestPoints.CREATE, params=employee)
-        if expected_error:
-            return result["status_code"], result
+        print(result)
         return result["status_code"], json.loads(result["text"])
