@@ -1,13 +1,45 @@
 import random
 import sys
 import string
-from copy import copy, deepcopy
+from copy import copy
+from modules.test_constants import POST_PARAM_LIST, POST_PARAM_TYPES, MIN_AGE, MAX_AGE, CLOSE_PARAM_TYPES
 
-from modules.test_constants import POST_PARAM_LIST, POST_PARAM_TYPES, MIN_AGE, MAX_AGE
+
+def get_bodies(number=5, excluded_params=None):
+    """ Generate bodies for create cases
+
+    :param number: number of bodies
+    :type number: int
+    :param excluded_params: parameter names witch excluded from generated body
+    :type excluded_params: list
+    :returns: valid bodies
+    :rtype: list
+    """
+    bodies = []
+    for _ in range(number):
+        bodies.append(create_body(excluded_params))
+    return bodies
+
+
+def get_negative_post_bodies():
+    """ Generate non valid bodies for create cases
+
+    :returns: non valid bodies
+    :rtype: list
+    """
+    bodies = [create_body()]  # body with id
+    param_list = copy(POST_PARAM_LIST)
+    param_list.remove("id")
+    for param_name in param_list:
+        bodies.append(create_body(excluded_params=["id", param_name]))
+    for _ in range(5):
+        bodies.append(create_body(excluded_params=["id"], is_bad_format=True))
+    return bodies
 
 
 def create_body(excluded_params=None, is_bad_format=False):
     """ Create body
+
     :param excluded_params: parameter names witch excluded from generated body
     :type excluded_params: list
     :param is_bad_format: generate body with non format parameters
@@ -29,7 +61,8 @@ def create_body(excluded_params=None, is_bad_format=False):
             continue
         param_format = POST_PARAM_TYPES[body_param]
         if is_bad_format:
-            param_format = random.choice([item for item in POST_PARAM_TYPES.values() if item != param_format])
+            bad_formats = [item for item in POST_PARAM_TYPES.values() if item not in CLOSE_PARAM_TYPES[param_format]]
+            param_format = random.choice(bad_formats)
         body[body_param] = gen_funcs[param_format]()
     return body
 
