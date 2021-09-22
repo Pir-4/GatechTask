@@ -1,4 +1,4 @@
-from modules.test_constants import MIN_AGE, MAX_AGE
+from modules.test_constants import MIN_AGE, MAX_AGE, FIELD_MAP
 
 
 def is_employee_valid(employee_body, raise_error=True):
@@ -47,6 +47,24 @@ def is_employee_valid(employee_body, raise_error=True):
     if error_messages:
         print(error_messages)
         if raise_error:
-            raise ValueError(error_messages)
+            raise AssertionError(error_messages)
         return False
     return True
+
+
+def equals(post_body, get_body, raise_error=True):
+    """"""
+    error_messages = []
+    for field_name in post_body.keys():
+        get_field_name = FIELD_MAP[field_name]
+        if post_body[field_name] != get_body[get_field_name]:
+            message = f"POST {field_name}: {post_body[field_name]}, GET {get_field_name}: {get_body[get_field_name]}"
+            error_messages.append(message)
+    if error_messages:
+        message = "Bodies don't equal:\n" + "\n".join(error_messages)
+        print(message)
+        if raise_error:
+            raise AssertionError(message)
+        return False
+    return True
+
