@@ -5,6 +5,7 @@ import time
 class BaseRestApi:
     """ Provide base Rest methods """
 
+    _sleep_limit = 21
     _requestsCalls = {"GET": requests.get,
                       "POST": requests.post,
                       "PUT": requests.put,
@@ -47,6 +48,8 @@ class BaseRestApi:
             if result["status_code"] == 429:
                 time.sleep(time_sleep)
                 time_sleep += 3
+                if time_sleep > self._sleep_limit:
+                    raise RuntimeWarning(f"Server returns 429 errors after sleep {time_sleep}")
         return result
 
     def update_header(self, header):
