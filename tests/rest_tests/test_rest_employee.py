@@ -18,12 +18,13 @@ def test_get_positive(rest_version_employee, employee_id):
     status_code, body = rest_version_employee.get(employee_id)
     assert status_code == HTTPStatus.OK
     assert validate_funcs.is_employee_valid(body["data"])
+    assert employee_id == body["data"]["id"]
     assert body["message"] == ResponseMessages.GET_SUCCESS_MSG
     assert body["status"] == ResponseMessages.SUCCESS_STATUS
 
 
 @pytest.mark.parametrize('rest_version_employee', [1], indirect=True)
-@pytest.mark.parametrize('employee_id', [0, -1, "lol", 1.0])
+@pytest.mark.parametrize('employee_id', [0, -1, "str", 1.0, 2.7])
 def test_get_negative(rest_version_employee, employee_id):
     """Verify negative get cases"""
     status_code, body = rest_version_employee.get(employee_id)

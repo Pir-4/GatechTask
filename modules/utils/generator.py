@@ -34,6 +34,9 @@ def get_negative_post_bodies():
         bodies.append(create_body(excluded_params=["id", param_name]))
     for _ in range(5):
         bodies.append(create_body(excluded_params=["id"], is_bad_format=True))
+    add_field = create_body(excluded_params=["id"])
+    add_field.update({"newField": "smth"})
+    bodies.append(add_field)
     return bodies
 
 
