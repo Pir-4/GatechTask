@@ -27,7 +27,7 @@ def get_negative_post_bodies():
     :returns: non valid bodies
     :rtype: list
     """
-    bodies = [create_body()]  # body with id
+    bodies = [{}, create_body()]  # body with id
     param_list = copy(POST_PARAM_LIST)
     param_list.remove("id")
     for param_name in param_list:
