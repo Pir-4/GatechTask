@@ -23,7 +23,16 @@ POST_PARAM_TYPES = {"id": "int",
                     "name": "name",
                     "salary": "salary",
                     "age": "age"}
+CLOSE_PARAM_TYPES = {"int": ["int", "age", "salary"],
+                     "age": ["int", "age", "salary"],
+                     "salary": ["int", "age", "salary"],
+                     "name": ["name", "str"],
+                     "str": ["name", "str"]}
 POST_PARAM_LIST = ["id", "name", "salary", "age"]
 
+FIELD_MAP = {"id": "id",
+             "name": "employee_name",
+             "salary": "employee_salary",
+             "age": "employee_age"}
 MIN_AGE = 12
 MAX_AGE = 150
